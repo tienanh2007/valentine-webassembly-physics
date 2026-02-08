@@ -18,8 +18,9 @@ let mouseX = 0;
 let mouseY = 0;
 
 // Constants for text collision-reveal effect
-const TEXT_CONTENT = "Will you be my Valentine?";
-const FONT_SIZE = 120; // Adjusted for longer text
+const TEXT_LINES = ["Vanessa", "Will you be my Valentine?"];
+const FONT_SIZE = 120; // Size for both lines
+const LINE_SPACING = 140; // Vertical spacing between lines
 const ATTRACTION_STRENGTH = 0.0; // DISABLED - no gravity attraction
 const PARTICLE_COUNT = 1500; // More particles for better coverage
 const SAMPLE_RATE = 3; // Denser sampling for smoother collision
@@ -83,59 +84,68 @@ function calculateTextAttractionPoints() {
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
 
-    const centerY = canvas.height / 2;
     tempCtx.font = `bold ${FONT_SIZE}px Arial`;
     tempCtx.textAlign = 'center';
     tempCtx.textBaseline = 'middle';
 
-    // Measure full text width to position characters
-    const fullWidth = tempCtx.measureText(TEXT_CONTENT).width;
-    const startX = (canvas.width - fullWidth) / 2;
+    // Calculate starting Y position for centered multi-line text
+    const totalHeight = TEXT_LINES.length * LINE_SPACING;
+    const startY = (canvas.height - totalHeight) / 2 + LINE_SPACING / 2;
 
-    let currentX = startX;
+    let globalCharIndex = 0;
 
-    // Process each character separately
-    for (let charIndex = 0; charIndex < TEXT_CONTENT.length; charIndex++) {
-        const char = TEXT_CONTENT[charIndex];
-        const charWidth = tempCtx.measureText(char).width;
+    // Process each line
+    TEXT_LINES.forEach((line, lineIndex) => {
+        const centerY = startY + (lineIndex * LINE_SPACING);
+        const fullWidth = tempCtx.measureText(line).width;
+        const startX = (canvas.width - fullWidth) / 2;
+        let currentX = startX;
 
-        // Clear canvas for this character
-        tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+        // Process each character in the line
+        for (let charIndex = 0; charIndex < line.length; charIndex++) {
+            const char = line[charIndex];
+            const charWidth = tempCtx.measureText(char).width;
 
-        // Draw single character
-        tempCtx.strokeStyle = 'white';
-        tempCtx.lineWidth = 4;
-        tempCtx.strokeText(char, currentX + charWidth / 2, centerY);
+            // Clear canvas for this character
+            tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
 
-        // Extract points for this character
-        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        const data = imageData.data;
-        const letterPoints = [];
+            // Draw single character
+            tempCtx.strokeStyle = 'white';
+            tempCtx.lineWidth = 4;
+            tempCtx.strokeText(char, currentX + charWidth / 2, centerY);
 
-        for (let y = 0; y < tempCanvas.height; y += SAMPLE_RATE) {
-            for (let x = 0; x < tempCanvas.width; x += SAMPLE_RATE) {
-                const i = (y * tempCanvas.width + x) * 4;
-                const alpha = data[i + 3];
+            // Extract points for this character
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imageData.data;
+            const letterPoints = [];
 
-                if (alpha > 128) {
-                    const point = { x, y };
-                    letterPoints.push(point);
-                    textAttractionPoints.push(point);
+            for (let y = 0; y < tempCanvas.height; y += SAMPLE_RATE) {
+                for (let x = 0; x < tempCanvas.width; x += SAMPLE_RATE) {
+                    const i = (y * tempCanvas.width + x) * 4;
+                    const alpha = data[i + 3];
 
-                    // Map this collision point to this letter
-                    collisionPointToLetter.set(`${x},${y}`, charIndex);
+                    if (alpha > 128) {
+                        const point = { x, y };
+                        letterPoints.push(point);
+                        textAttractionPoints.push(point);
+
+                        // Map this collision point to this letter
+                        collisionPointToLetter.set(`${x},${y}`, globalCharIndex);
+                    }
                 }
             }
+
+            // Store letter group
+            letterGroups.push({
+                char: char,
+                points: letterPoints,
+                line: lineIndex
+            });
+
+            currentX += charWidth;
+            globalCharIndex++;
         }
-
-        // Store letter group
-        letterGroups.push({
-            char: char,
-            points: letterPoints
-        });
-
-        currentX += charWidth;
-    }
+    });
 }
 
 // Initialize Yes/No boxes
@@ -157,8 +167,8 @@ function initializeBoxes() {
         width: yesBoxWidth,
         height: yesBoxHeight,
         label: "Yes",
-        color: 'rgba(0, 255, 100, 0.8)',
-        hoverColor: 'rgba(0, 255, 100, 1.0)'
+        color: 'rgba(255, 105, 180, 0.8)',
+        hoverColor: 'rgba(255, 105, 180, 1.0)'
     };
 
     noBox = {
@@ -427,8 +437,8 @@ function gameLoop() {
 
 // Render particles and collision-reveal text effect
 function render() {
-    // Clear canvas completely
-    ctx.fillStyle = '#0a0a0a';
+    // Clear canvas completely - Valentine's dark pink background
+    ctx.fillStyle = '#1a0a14';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Get particle data
@@ -459,10 +469,10 @@ function render() {
 
     // Draw fine permanent glowing circles at collision points
     collisionHistory.forEach(collision => {
-        // Very fine, bright, permanent glow
-        ctx.shadowBlur = 4;
-        ctx.shadowColor = 'rgba(0, 217, 255, 0.8)';
-        ctx.fillStyle = 'rgba(0, 217, 255, 1.0)';
+        // Very fine, bright, permanent glow - Valentine's pink/rose theme
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = 'rgba(255, 105, 180, 0.9)';
+        ctx.fillStyle = 'rgba(255, 182, 193, 1.0)';
 
         ctx.beginPath();
         ctx.arc(collision.x, collision.y, 1.5, 0, Math.PI * 2); // Fine 1.5px radius
