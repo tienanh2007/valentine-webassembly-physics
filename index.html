@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebAssembly Particle System Demo</title>
+    <title>Will you be my Valentine?</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,76 +19,17 @@
     <!-- Main Canvas -->
     <canvas id="particleCanvas"></canvas>
 
-    <!-- Control Panel -->
-    <div id="control-panel">
-        <h2>Particle System Controls</h2>
-
-        <div class="control-group">
-            <label for="particle-count">Particle Count: <span id="count-value">500</span></label>
-            <input type="range" id="particle-count" min="0" max="5000" value="500" step="100">
-        </div>
-
-        <div class="control-group">
-            <label for="attraction-strength">Mouse Attraction: <span id="attraction-value">1.0</span></label>
-            <input type="range" id="attraction-strength" min="0" max="3" value="1.0" step="0.1">
-        </div>
-
-        <div class="control-group">
-            <label>
-                <input type="checkbox" id="mouse-enabled" checked>
-                Enable Mouse Attraction
-            </label>
-        </div>
-
-        <div class="control-group">
-            <label>
-                <input type="checkbox" id="collisions-enabled" checked>
-                Enable Collisions
-            </label>
-        </div>
-
-        <div class="button-group">
-            <button id="add-particles">Add 100 Particles</button>
-            <button id="clear-particles">Clear All</button>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-label">FPS:</span>
-                <span id="fps-display">60</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Particles:</span>
-                <span id="particle-display">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Frame Time:</span>
-                <span id="frame-time-display">16ms</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Instructions -->
-    <div id="instructions">
-        <h3>Instructions</h3>
-        <ul>
-            <li>Move your mouse to attract particles</li>
-            <li>Click to add particles at cursor position</li>
-            <li>Use controls to adjust parameters</li>
-            <li>Watch performance metrics in real-time</li>
-        </ul>
-        <button id="close-instructions">Got it!</button>
-    </div>
-
-    <!-- Info Badge -->
-    <div id="info-badge">
-        <div class="badge-title">WebAssembly Particle System</div>
-        <div class="badge-subtitle">Built with C++ & Emscripten</div>
+    <!-- FPS Display -->
+    <div id="fps-counter" style="position: fixed; top: 20px; right: 20px;
+         color: #00ff88; font-family: monospace; font-size: 18px;
+         background: rgba(0,0,0,0.7); padding: 10px 15px; border-radius: 5px;
+         pointer-events: none; z-index: 1000;">
+        <span id="fps-display">60</span> FPS
     </div>
 
     <!-- Load Scripts -->
     <script src="performance.js"></script>
     <script src="particle_demo.js"></script>
-    <script src="app.js"></script>
+    <script src="valentine.js"></script>
 </body>
 </html>
