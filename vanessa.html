@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanessa - Particle System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>Loading WebAssembly Module...</h1>
+            <div class="loading-spinner"></div>
+            <p>Compiling C++ particle physics engine</p>
+        </div>
+    </div>
+
+    <!-- Main Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- FPS Display -->
+    <div id="fps-counter" style="position: fixed; top: 20px; right: 20px;
+         color: #00ff88; font-family: monospace; font-size: 18px;
+         background: rgba(0,0,0,0.7); padding: 10px 15px; border-radius: 5px;
+         pointer-events: none; z-index: 1000;">
+        <span id="fps-display">60</span> FPS
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="performance.js"></script>
+    <script src="particle_demo.js"></script>
+    <script src="vanessa.js"></script>
+</body>
+</html>
